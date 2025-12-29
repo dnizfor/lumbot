@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
-export default function CategoryGroup({ onChange, categoryList }: { onChange: (id: String) => void, categoryList: any[] }) {
+export default function CategoryGroup({ onChange, categoryList }: { onChange: (id: string) => void, categoryList: any[] }) {
     return (
         <ScrollView
             horizontal showsHorizontalScrollIndicator={false}

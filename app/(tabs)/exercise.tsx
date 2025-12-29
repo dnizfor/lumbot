@@ -1,7 +1,7 @@
 import RelaxAnimation from '@/assets/lotties/relax.json';
 import CategoryGroup from '@/components/categoryGroup';
 import ExerciseCard from '@/components/exerciseCard';
-import { default as exercises, default as Exercises } from '@/lib/data';
+import Exercises from '@/lib/data';
 import LottieView from 'lottie-react-native';
 import { useState } from 'react';
 import { FlatList, StyleSheet } from "react-native";
@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Index() {
 
-  const [categoryId, setCategoryId] = useState(exercises.categories[2].id)
+  const [categoryId, setCategoryId] = useState(Exercises.categories[2].id)
 
   return (
     <SafeAreaView
@@ -21,7 +21,7 @@ export default function Index() {
         style={styles.animation}
         source={RelaxAnimation}
       />
-      <CategoryGroup categoryList={exercises.categories} onChange={setCategoryId} />
+      <CategoryGroup categoryList={Exercises.categories} onChange={setCategoryId} />
 
       <FlatList
         data={Exercises.categories.find(item => item.id === categoryId)!.exercises}

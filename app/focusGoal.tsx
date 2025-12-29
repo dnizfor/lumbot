@@ -11,7 +11,7 @@ export default function FocusGoal() {
         label: index.toString(),
     }))
     return (
-        <View >
+        <View style={styles.container}>
             <Stack.Screen
                 options={{
                     title: "",
@@ -35,6 +35,10 @@ export default function FocusGoal() {
     )
 }
 const styles = StyleSheet.create({
+    container: {
+        paddingHorizontal: 20,
+        rowGap: 16
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold',

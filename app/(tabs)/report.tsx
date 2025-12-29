@@ -25,7 +25,7 @@ export default function Index() {
         />
 
         <ArrowForwarButton title={'Focus Goal'} onPress={() => router.push("/focusGoal")} />
-        <ArrowForwarButton title={'Exercise Customization'} onPress={() => router.push("/customization")} />
+        <ArrowForwarButton title={'Customization'} onPress={() => router.push("/customization")} />
 
       </ScrollView>
     </SafeAreaView>

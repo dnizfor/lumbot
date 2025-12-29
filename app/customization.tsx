@@ -1,4 +1,5 @@
 import MultiCheck from '@/components/multiCheck';
+import Exercises from '@/lib/data';
 import WheelPicker from '@quidone/react-native-wheel-picker';
 import { Stack } from "expo-router";
 import React, { useState } from 'react';
@@ -6,7 +7,7 @@ import { ScrollView, StyleSheet, Text } from 'react-native';
 
 export default function Customization() {
     const [value, setValue] = useState(0);
-    const data = [{
+    const focusTimes = [{
         value: 15,
         label: '15',
 
@@ -42,7 +43,7 @@ export default function Customization() {
         label: '30',
     }]
     return (
-        <ScrollView>
+        <ScrollView contentContainerStyle={styles.container}>
             <Stack.Screen
                 options={{
                     title: "",
@@ -55,7 +56,7 @@ export default function Customization() {
                 On the work headmap, the darker the color, the closer you are to reaching it.
             </Text>
             <WheelPicker
-                data={data}
+                data={focusTimes}
                 value={value}
                 onValueChanged={({ item: { value } }) => setValue(value)}
                 enableScrollByTapOnItem={true}
@@ -76,13 +77,17 @@ export default function Customization() {
             <Text style={styles.subtitle}>
                 On the work headmap, the darker the color, the closer you are to reaching it.
             </Text>
-            <MultiCheck />
-
+            <MultiCheck options={Exercises.categories.map(category => category.category_name)} />
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+        paddingHorizontal: 20,
+        rowGap: 16,
+        paddingBottom: 30
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold',

@@ -2,8 +2,7 @@ import CheckBox from "@react-native-community/checkbox";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 
-export default function MultiCheck() {
-    const options = ["Elma", "Armut", "Muz"];
+export default function MultiCheck({ options }: { options: string[] }) {
     const [selected, setSelected] = useState<string[]>([options[0]]);
 
     const toggleOption = (option: string) => {
@@ -17,14 +16,15 @@ export default function MultiCheck() {
     };
 
     return (
-        <View>
+        <View >
             {options.map((option) => (
                 <View key={option} style={{ flexDirection: "row", alignItems: "center" }}>
                     <CheckBox
                         value={selected.includes(option)}
                         onValueChange={() => toggleOption(option)}
+                        tintColors={{ true: "blue", false: "gray" }}
                     />
-                    <Text>{option}</Text>
+                    <Text style={{ fontSize: 20, }}>{option}</Text>
                 </View>
             ))}
         </View>

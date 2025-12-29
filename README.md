@@ -1,50 +1,93 @@
-# Welcome to your Expo app 👋
+# 🧠 Lumbot – Developers’ Neck & Back Health
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Lumbot** is a Pomodoro-based productivity and health app designed for developers and desk workers.  
+While you work, Lumbot periodically sends **neck, back, and body exercise reminders** to help reduce pain, improve posture, and build healthy habits.
 
-## Get started
+---
 
-1. Install dependencies
+## 🎯 Purpose
 
-   ```bash
-   npm install
-   ```
+- Reduce **neck, back, and posture-related pain**
+- Help developers stay **focused and productive**
+- Encourage healthy work habits
+- Integrate short, effective exercises into daily routines
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## ⏱️ How It Works
 
-In the output, you'll find options to open the app in a
+1. Set your focused work duration (Pomodoro)
+2. Work without distractions
+3. During breaks, Lumbot suggests **targeted exercises**
+4. Completed exercises are tracked as habits
+5. A heatmap visualizes consistency and progress
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🚀 Features
 
-## Get a fresh project
+### ⏰ Pomodoro Timer
+- Customizable work duration
+- Customizable break duration
+- Support for short and long breaks
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
-```
+### 🧘 Exercise-Based Break Reminders
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Exercises are grouped into **four main body focus areas**:
 
-## Learn more
+- **Hands** – wrists, fingers, forearms  
+- **Head** – neck, head, upper spine  
+- **Back** – shoulders, upper & lower back  
+- **Lower Body** – hips, legs, posture muscles  
 
-To learn more about developing your project with Expo, look at the following resources:
+Users can choose which body area to focus on based on their needs.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
+### 📊 Heatmap (Consistency Tracker)
 
-Join our community of developers creating universal apps.
+- Visualizes daily activity and exercise completion
+- Helps users identify patterns and maintain consistency
+- Encourages long-term healthy habits
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+### ✅ Habit Tracking
+
+- Daily exercise completion tracking
+- Work–break balance monitoring
+- Progress and consistency insights
+
+---
+
+## 👩‍💻 Who Is It For?
+
+- Developers
+- Designers
+- Students
+- Anyone working long hours at a desk
+
+---
+
+## 🛠️ Future Plans
+
+- Custom notification scheduling
+- Weekly and monthly health reports
+- Exercise animations and visual guides
+- Cross-platform sync (mobile & desktop)
+- Smart recommendations based on usage patterns
+
+---
+
+## 📌 Disclaimer
+
+Lumbot does not provide medical advice.  
+All exercises are intended for general wellness and awareness only.
+
+---
+
+## 💚 Code Healthy with Lumbot
+
+> “Great code starts with a healthy body.”

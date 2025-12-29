@@ -16,32 +16,33 @@ export default function Customization() {
         value: 30,
         label: '30',
     }]
-    const breakTimes = [{
-        value: 0,
-        label: 'auto',
+    const breakTimes = [
+        {
+            value: 0,
+            label: 'auto',
 
-    },
-    {
-        value: 1,
-        label: '1',
-    },
-    {
-        value: 5,
-        label: '5',
-    },
-    {
-        value: 15,
-        label: '15',
-    },
+        },
+        {
+            value: 1,
+            label: '1',
+        },
+        {
+            value: 5,
+            label: '5',
+        },
+        {
+            value: 15,
+            label: '15',
+        },
 
-    {
-        value: 20,
-        label: '20',
-    },
-    {
-        value: 30,
-        label: '30',
-    }]
+        {
+            value: 20,
+            label: '20',
+        },
+        {
+            value: 30,
+            label: '30',
+        }]
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Stack.Screen
@@ -61,7 +62,6 @@ export default function Customization() {
                 onValueChanged={({ item: { value } }) => setValue(value)}
                 enableScrollByTapOnItem={true}
             />
-
             <Text style={styles.title} >Set Your Break Time</Text>
             <Text style={styles.subtitle}>
                 On the work headmap, the darker the color, the closer you are to reaching it.
@@ -72,7 +72,6 @@ export default function Customization() {
                 onValueChanged={({ item: { value } }) => setValue(value)}
                 enableScrollByTapOnItem={true}
             />
-
             <Text style={styles.title} >Customization </Text>
             <Text style={styles.subtitle}>
                 On the work headmap, the darker the color, the closer you are to reaching it.

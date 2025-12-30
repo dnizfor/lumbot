@@ -69,18 +69,6 @@ Users can choose which body area to focus on based on their needs.
 - Students
 - Anyone working long hours at a desk
 
----
-
-## 🛠️ Future Plans
-
-- Custom notification scheduling
-- Weekly and monthly health reports
-- Exercise animations and visual guides
-- Cross-platform sync (mobile & desktop)
-- Smart recommendations based on usage patterns
-
----
-
 ## 📌 Disclaimer
 
 Lumbot does not provide medical advice.  

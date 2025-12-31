@@ -1,21 +1,57 @@
 import ReportAnimation from '@/assets/lotties/reports.json';
 import ArrowForwarButton from '@/components/arrowForwarButton';
 import HeadMap from "@/components/headMap";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from "expo-router";
 import LottieView from 'lottie-react-native';
-import { ScrollView, StyleSheet, Text } from "react-native";
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Index() {
   const router = useRouter();
+  const [currentDate, setCurrentDate] = useState(
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+  );
+
+  const changeMonth = (direction: -1 | 1) => {
+    setCurrentDate(
+      new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + direction,
+        1
+      )
+    )
+  };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'right', 'left']}>
+    <SafeAreaView style={styles.container} edges={['top', 'right', 'left']}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          {/* Ay ismi, dikeyde ortalı */}
+          <Text style={styles.monthText}>
+            {currentDate.toLocaleString('tr-TR', { month: 'long' })}
+          </Text>
 
-        <Text style={styles.monthText}>December</Text>
+          {/* Butonlar sağda, yan yana */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.arrowButton}
+              onPress={() => changeMonth(-1)}
+            >
+              <MaterialIcons name="arrow-back-ios" size={24} color="black" />
+            </TouchableOpacity>
 
-        <HeadMap />
+            <TouchableOpacity
+              style={styles.arrowButton}
+              onPress={() => changeMonth(1)}
+            >
+              <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <HeadMap currentDate={currentDate} />
 
         <LottieView
           autoPlay
@@ -30,28 +66,46 @@ export default function Index() {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
   },
   scrollContent: {
     alignItems: "center",
     paddingHorizontal: 20,
-    gap: 5,
+    gap: 7,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 10,
+    height: 40,
   },
   monthText: {
     fontWeight: 'bold',
-    alignSelf: 'flex-start',
     fontSize: 25,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  arrowButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    borderRadius: 8,
   },
   lottieContainer: {
     borderWidth: 2,
     borderColor: 'white',
     backgroundColor: 'white',
     borderRadius: 10,
-    marginTop: 10,
     width: '100%',
     alignItems: 'center'
   },

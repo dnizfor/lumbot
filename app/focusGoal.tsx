@@ -1,15 +1,27 @@
+import useExerciseStore from '@/zustand/exerciseStore';
 import WheelPicker from '@quidone/react-native-wheel-picker';
 import { Stack } from "expo-router";
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function FocusGoal() {
-    const [value, setValue] = useState(0);
 
-    const data = [...Array(25).keys()].map((index) => ({
-        value: index,
-        label: index.toString(),
+    const data = [...Array(24).keys()].map((index) => ({
+        value: index + 1,
+        label: (index + 1).toString(),
     }))
+
+    const {
+        focusGoal,
+        setFocusGoal,
+    } = useExerciseStore(
+        useShallow((state) => ({
+            focusGoal: state.focusGoal,
+            setFocusGoal: state.setFocusGoal,
+        }))
+    )
+
     return (
         <View style={styles.container}>
             <Stack.Screen
@@ -25,8 +37,8 @@ export default function FocusGoal() {
             </Text>
             <WheelPicker
                 data={data}
-                value={value}
-                onValueChanged={({ item: { value } }) => setValue(value)}
+                value={focusGoal}
+                onValueChanged={({ item: { value } }) => setFocusGoal(value)}
                 enableScrollByTapOnItem={true}
             />
 

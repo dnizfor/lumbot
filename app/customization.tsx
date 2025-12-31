@@ -1,12 +1,33 @@
 import MultiCheck from '@/components/multiCheck';
 import Exercises from '@/lib/data';
+import useExerciseStore from '@/zustand/exerciseStore';
 import WheelPicker from '@quidone/react-native-wheel-picker';
 import { Stack } from "expo-router";
-import React, { useState } from 'react';
+import React from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
-
+import { useShallow } from 'zustand/react/shallow';
 export default function Customization() {
-    const [value, setValue] = useState(0);
+
+    const {
+        exerciseList,
+        focusPeriod,
+        breakPeriod,
+        setExerciseList,
+        setFocusPeriod,
+        setBreakPeriod,
+    } = useExerciseStore(
+        useShallow((state) => ({
+            exerciseList: state.exerciseList,
+            focusPeriod: state.focusPeriod,
+            breakPeriod: state.breakPeriod,
+            setExerciseList: state.setExerciseList,
+            setFocusPeriod: state.setFocusPeriod,
+            setBreakPeriod: state.setBreakPeriod,
+        }))
+    )
+
+
+
     const focusTimes = [{
         value: 15,
         label: '15',
@@ -58,8 +79,8 @@ export default function Customization() {
             </Text>
             <WheelPicker
                 data={focusTimes}
-                value={value}
-                onValueChanged={({ item: { value } }) => setValue(value)}
+                value={focusPeriod}
+                onValueChanged={({ item: { value } }) => setFocusPeriod(value)}
                 enableScrollByTapOnItem={true}
             />
             <Text style={styles.title} >Set Your Break Time</Text>
@@ -68,15 +89,15 @@ export default function Customization() {
             </Text>
             <WheelPicker
                 data={breakTimes}
-                value={value}
-                onValueChanged={({ item: { value } }) => setValue(value)}
+                value={breakPeriod}
+                onValueChanged={({ item: { value } }) => setBreakPeriod(value)}
                 enableScrollByTapOnItem={true}
             />
             <Text style={styles.title} >Customization </Text>
             <Text style={styles.subtitle}>
                 On the work headmap, the darker the color, the closer you are to reaching it.
             </Text>
-            <MultiCheck options={Exercises.categories.map(category => category.category_name)} />
+            <MultiCheck defaultSelectedList={exerciseList} onValueChange={setExerciseList} options={Exercises.categories.map(category => category.category_name)} />
         </ScrollView>
     )
 }

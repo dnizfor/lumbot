@@ -17,7 +17,9 @@ export default function Customization() {
         setFocusPeriod,
         setBreakPeriod,
         waterReminder,
-        setWaterReminder
+        setWaterReminder,
+        focusGoal,
+        setFocusGoal,
     } = useExerciseStore(
         useShallow((state) => ({
             exerciseList: state.exerciseList,
@@ -28,6 +30,8 @@ export default function Customization() {
             setBreakPeriod: state.setBreakPeriod,
             waterReminder: state.waterReminder,
             setWaterReminder: state.setWaterReminder,
+            focusGoal: state.focusGoal,
+            setFocusGoal: state.setFocusGoal,
         }))
     )
 
@@ -69,6 +73,12 @@ export default function Customization() {
             value: 30,
             label: '30',
         }]
+
+    const focusGoals = [...Array(24).keys()].map((index) => ({
+        value: index + 1,
+        label: (index + 1).toString(),
+    }))
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Stack.Screen
@@ -98,6 +108,16 @@ export default function Customization() {
                 onValueChanged={({ item: { value } }) => setBreakPeriod(value)}
                 enableScrollByTapOnItem={true}
             />
+            <Text style={styles.title} >Set Your Focus Goal</Text>
+            <Text style={styles.subtitle}>
+                On the work headmap, the darker the color, the closer you are to reaching it.
+            </Text>
+            <WheelPicker
+                data={focusGoals}
+                value={focusGoal}
+                onValueChanged={({ item: { value } }) => setFocusGoal(value)}
+                enableScrollByTapOnItem={true}
+            />
             <Text style={styles.title} >Customization </Text>
             <Text style={styles.subtitle}>
                 On the work headmap, the darker the color, the closer you are to reaching it.
@@ -108,6 +128,7 @@ export default function Customization() {
                 Reminds you to drink water while working.
             </Text>
             <SwitchButton title="Reminder" value={waterReminder} onToggle={setWaterReminder} />
+
         </ScrollView>
     )
 }

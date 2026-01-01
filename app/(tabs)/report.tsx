@@ -60,7 +60,6 @@ export default function Index() {
           source={ReportAnimation}
         />
 
-        <ArrowForwarButton title={'Focus Goal'} onPress={() => router.push("/focusGoal")} />
         <ArrowForwarButton title={'Customization'} onPress={() => router.push("/customization")} />
 
       </ScrollView>

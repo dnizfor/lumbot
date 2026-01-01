@@ -1,4 +1,5 @@
 import MultiCheck from '@/components/multiCheck';
+import SwitchButton from '@/components/switchButton';
 import Exercises from '@/lib/data';
 import useExerciseStore from '@/zustand/exerciseStore';
 import WheelPicker from '@quidone/react-native-wheel-picker';
@@ -15,6 +16,8 @@ export default function Customization() {
         setExerciseList,
         setFocusPeriod,
         setBreakPeriod,
+        waterReminder,
+        setWaterReminder
     } = useExerciseStore(
         useShallow((state) => ({
             exerciseList: state.exerciseList,
@@ -23,6 +26,8 @@ export default function Customization() {
             setExerciseList: state.setExerciseList,
             setFocusPeriod: state.setFocusPeriod,
             setBreakPeriod: state.setBreakPeriod,
+            waterReminder: state.waterReminder,
+            setWaterReminder: state.setWaterReminder,
         }))
     )
 
@@ -98,6 +103,11 @@ export default function Customization() {
                 On the work headmap, the darker the color, the closer you are to reaching it.
             </Text>
             <MultiCheck defaultSelectedList={exerciseList} onValueChange={setExerciseList} options={Exercises.categories.map(category => category.category_name)} />
+            <Text style={styles.title} >Water Reminder </Text>
+            <Text style={styles.subtitle}>
+                Reminds you to drink water while working.
+            </Text>
+            <SwitchButton title="Reminder" value={waterReminder} onToggle={setWaterReminder} />
         </ScrollView>
     )
 }

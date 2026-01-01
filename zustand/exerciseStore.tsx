@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-interface ExerciseState {
+type ExerciseState = {
     exerciseList: string[],
     setExerciseList: (newExerciseList: string[]) => void,
     focusPeriod: number,
@@ -12,6 +12,8 @@ interface ExerciseState {
     setBreakPeriod: (newBreakPeriod: number) => void,
     focusGoal: number,
     setFocusGoal: (newFocusGoal: number) => void,
+    waterReminder: boolean,
+    setWaterReminder: (enabled: boolean) => void,
 
 }
 
@@ -26,6 +28,8 @@ const useExerciseStore = create<ExerciseState>()(
             setBreakPeriod: (breakPeriod) => set({ breakPeriod }),
             focusGoal: 4,
             setFocusGoal: (focusGoal) => set({ focusGoal }),
+            waterReminder: false,
+            setWaterReminder: (waterReminder) => set({ waterReminder }),
         }),
         {
             name: 'exercise-storage',

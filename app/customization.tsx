@@ -1,7 +1,7 @@
 import MultiCheck from '@/components/multiCheck';
 import SwitchButton from '@/components/switchButton';
 import Exercises from '@/lib/data';
-import useExerciseStore from '@/zustand/exerciseStore';
+import useExerciseStore from '@/zustand/useExerciseStore';
 import WheelPicker from '@quidone/react-native-wheel-picker';
 import { Stack } from "expo-router";
 import React from 'react';
@@ -45,7 +45,23 @@ export default function Customization() {
     {
         value: 30,
         label: '30',
-    }]
+    },
+    {
+        value: 45,
+        label: '45',
+    },
+    {
+        value: 60,
+        label: '60',
+    },
+    {
+        value: 90,
+        label: '90',
+    },
+    {
+        value: 120,
+        label: '120',
+    },]
     const breakTimes = [
         {
             value: 0,

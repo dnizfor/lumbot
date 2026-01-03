@@ -1,14 +1,20 @@
+import { Colors } from '@/constants/colors';
 import exercisesData from '@/lib/data';
 import useExerciseStore from '@/zustand/useExerciseStore';
+import useThemeStore from '@/zustand/useThemeStore';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useKeepAwake } from 'expo-keep-awake';
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SwipeButton from "rn-swipe-button";
 import { useShallow } from 'zustand/react/shallow';
-
 export default function Index() {
   useKeepAwake();
+
+  const theme = useThemeStore(state => state.theme);
+
+  const styles = useMemo(() => makeStyles(theme), [theme]);
 
   const { focusPeriod, waterReminder } = useExerciseStore(
     useShallow((state) => ({
@@ -25,14 +31,12 @@ export default function Index() {
   const [selectedExercises, setSelectedExercises] = useState<any[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Ayarlardan süre değişirse ve sayaç boştaysa güncelle
   useEffect(() => {
     if (!isRunning && currentStep === 0 && !interrupted) {
       setSecondsLeft(focusPeriod * 60);
     }
   }, [focusPeriod]);
 
-  // Sayaç Döngüsü
   useEffect(() => {
     if (!isRunning || secondsLeft <= 0) return;
     const interval = setInterval(() => {
@@ -41,7 +45,6 @@ export default function Index() {
     return () => clearInterval(interval);
   }, [isRunning, secondsLeft]);
 
-  // Süre Tamamen Bitince Otomatik Egzersiz Başlat
   useEffect(() => {
     if (secondsLeft === 0 && isRunning && currentStep === 0) {
       handleExerciseSelection();
@@ -52,17 +55,16 @@ export default function Index() {
   const seconds = secondsLeft % 60;
   const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-  let borderColor = 'black';
-  if (currentStep === 1) borderColor = 'yellow';
-  else if (currentStep === 2) borderColor = 'green';
-  else if (currentStep === 3) borderColor = '#00aaff';
-  else {
-    if (isRunning) borderColor = 'blue';
-    else if (secondsLeft <= 0) borderColor = 'yellow';
-    else if (interrupted) borderColor = 'red';
-  }
 
-  // EGZERSİZLERİ HAZIRLA
+  function getBorderColor() {
+    if (currentStep === 1) return Colors[theme].textSecondary;
+    if (currentStep === 2) return Colors[theme].successful;
+    if (currentStep === 3) return '#00aaff';
+    if (isRunning) return Colors[theme].primary;
+    if (secondsLeft <= 0) return Colors[theme].textSecondary;
+    if (interrupted) return Colors[theme].alert;
+    return Colors[theme].themeCross;
+  }
   const handleExerciseSelection = () => {
     const shuffledCategories = [...categories].sort(() => 0.5 - Math.random());
     const pickedCategories = shuffledCategories.slice(0, 2);
@@ -73,10 +75,9 @@ export default function Index() {
 
     setSelectedExercises(pickedExercises);
     setCurrentStep(1);
-    setIsRunning(false); // Egzersiz sırasında süreyi durdur
+    setIsRunning(false);
   };
 
-  // EGZERSİZ BİTİNCE ÇALIŞACAK MANTIK
   const finishExercises = () => {
     const wasTimerFinished = secondsLeft === 0;
 
@@ -85,11 +86,8 @@ export default function Index() {
     setInterrupted(false);
 
     if (wasTimerFinished) {
-      // Eğer 45 dk bittiği için egzersiz yapıldıysa süreyi sıfırla
       setSecondsLeft(focusPeriod * 60);
     }
-    // Eğer mola verilip egzersiz yapıldıysa setSecondsLeft yapmıyoruz, 
-    // böylece kaldığı saniyeden devam ediyor.
 
     setIsRunning(true);
   };
@@ -107,11 +105,16 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Çember Bölümü */}
-      <View style={styles.topSection}>
+      <View style={[styles.topSection, currentStep == 0 && !interrupted && { flex: 1, }]}>
         <TouchableOpacity
           activeOpacity={0.8}
-          style={[styles.bot, { borderColor }]}
+          style={[
+            styles.bot,
+            {
+              borderColor: getBorderColor(),
+              backgroundColor: currentStep > 0 ? (theme === 'light' ? '#ffffff' : '#000000') : Colors[theme].background,
+            },
+          ]}
           onPress={() => {
             if (currentStep === 0) {
               if (isRunning) { setIsRunning(false); setInterrupted(true); }
@@ -122,27 +125,48 @@ export default function Index() {
           }}
         >
           {currentStep === 0 ? (
-            <Text style={[styles.title, { color: borderColor }]}>{formattedTime}</Text>
+            <Text style={[styles.title, { color: getBorderColor() }]}>{formattedTime}</Text>
           ) : currentStep === 3 ? (
-            <Image source={require("@/assets/thumbnails/light/water.png")} style={styles.exerciseImage} resizeMode="contain" />
+            <Image
+              source={theme == 'light' ? require("@/assets/thumbnails/light/water.png") : require("@/assets/thumbnails/dark/water.png")}
+              style={styles.exerciseImage}
+              resizeMode="contain"
+            />
           ) : (
-            <Image source={selectedExercises[currentStep - 1]?.lightSource} style={styles.exerciseImage} resizeMode="contain" />
+            <Image
+              source={theme == 'light' ? selectedExercises[currentStep - 1]?.lightSource : selectedExercises[currentStep - 1]?.darkSource}
+              style={styles.exerciseImage}
+              resizeMode="contain"
+            />
           )}
         </TouchableOpacity>
+
       </View>
 
-      {/* Alt Bölüm: Yazılar ve Pass Butonu */}
-      <View style={styles.bottomSection}>
+      <View style={[styles.bottomSection, currentStep == 0 && !interrupted && { display: 'none' }]}>
         {interrupted && currentStep === 0 && (
           <View style={styles.buttonGroup}>
             <TouchableOpacity style={styles.actionButton} onPress={handleExerciseSelection}>
               <Text style={styles.buttonText}>Exercise</Text>
             </TouchableOpacity>
             <SwipeButton
-              title="Sonlandir"
-              railBackgroundColor="#eee"
-              railFillBackgroundColor="#9fc7e8"
-              height={60} width={300}
+              title="Finish"
+              titleStyles={{ color: Colors[theme].themeCross, fontWeight: 'bold', fontSize: styles.buttonText.fontSize }}
+              railBackgroundColor={Colors[theme].secondary}
+              railFillBackgroundColor={Colors[theme].alert}
+              titleColor={Colors[theme].themeCross}
+              thumbIconBorderColor={Colors[theme].themeCross}
+              thumbIconBackgroundColor={Colors[theme].themeCross}
+              railBorderColor={Colors[theme].secondary}
+              railFillBorderColor={Colors[theme].alert}
+              thumbIconComponent={() => <MaterialIcons
+                name="arrow-back-ios"
+                size={30}
+                color={Colors[theme].theme}
+                style={{ marginLeft: 10 }}
+              />}
+              height={60}
+              width={300}
               enableReverseSwipe={true}
               onSwipeSuccess={() => {
                 setCurrentStep(0);
@@ -151,8 +175,8 @@ export default function Index() {
                 setIsRunning(false);
                 setInterrupted(false);
               }}
-              railStyles={{ borderRadius: 30 }}
             />
+
           </View>
         )}
 
@@ -170,23 +194,89 @@ export default function Index() {
           </View>
         )}
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
+function makeStyles(theme: 'light' | 'dark') {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors[theme].background,
+    },
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  topSection: { flex: 3, justifyContent: 'center', alignItems: 'center' },
-  bottomSection: { flex: 2, alignItems: 'center', justifyContent: 'flex-start' },
-  bot: { width: 300, height: 300, borderRadius: 150, borderWidth: 10, justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
-  title: { fontSize: 60, fontWeight: "bold" },
-  exerciseImage: { width: '75%', height: '75%' },
-  buttonGroup: { alignItems: 'center', gap: 12 },
-  actionButton: { height: 60, width: 300, backgroundColor: 'blue', borderRadius: 30, justifyContent: 'center', alignItems: 'center' },
-  buttonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
-  passButton: { backgroundColor: '#f0f0f0', marginTop: 20, borderWidth: 1, borderColor: '#ddd' },
-  passButtonText: { color: '#666', fontSize: 18, fontWeight: 'bold' },
-  exerciseTextWrapper: { alignItems: 'center', paddingHorizontal: 30 },
-  exerciseNameText: { fontSize: 24, fontWeight: 'bold', color: '#333', textAlign: 'center', marginBottom: 8 },
-  exerciseDescriptionText: { fontSize: 16, color: '#666', textAlign: 'center' }
-});
+    topSection: {
+      flex: 3,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    bottomSection: {
+      flex: 2,
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+
+    bot: {
+      width: 300,
+      height: 300,
+      borderRadius: 150,
+      borderWidth: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      overflow: 'hidden',
+    },
+    exerciseImage: {
+      width: '75%',
+      height: '75%',
+      resizeMode: 'contain',
+    },
+
+    title: {
+      fontSize: 60,
+      fontWeight: 'bold',
+    },
+    exerciseTextWrapper: {
+      alignItems: 'center',
+      paddingHorizontal: 30,
+    },
+    exerciseNameText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: Colors[theme].themeCross,
+      textAlign: 'center',
+      marginBottom: 8,
+    },
+    exerciseDescriptionText: {
+      fontSize: 16,
+      color: '#666',
+      textAlign: 'center',
+      lineHeight: 22,
+    },
+
+    buttonGroup: {
+      alignItems: 'center',
+      gap: 12,
+    },
+    actionButton: {
+      width: 300,
+      height: 60,
+      borderRadius: 30,
+      backgroundColor: Colors[theme].primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: '#FFF',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    passButton: {
+      marginTop: 20,
+      backgroundColor: Colors[theme].secondary,
+    },
+    passButtonText: {
+      color: Colors[theme].themeCross,
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+  });
+}

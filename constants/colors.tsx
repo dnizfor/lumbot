@@ -7,6 +7,7 @@ export const Colors = {
         successful: "#4CAF50",
         theme: "white",
         themeCross: "black",
+        textSecondary: "#6B7280",
     },
     dark: {
         primary: "#2979FF",
@@ -16,5 +17,6 @@ export const Colors = {
         successful: "#4CAF50",
         theme: "black",
         themeCross: "white",
+        textSecondary: "#9CA3AF",
     },
 };

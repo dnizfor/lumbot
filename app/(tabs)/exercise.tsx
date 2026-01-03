@@ -1,15 +1,23 @@
 import RelaxAnimation from '@/assets/lotties/relax.json';
 import CategoryGroup from '@/components/categoryGroup';
 import ExerciseCard from '@/components/exerciseCard';
+import { Colors } from '@/constants/colors';
 import Exercises from '@/lib/data';
+import useThemeStore from '@/zustand/useThemeStore';
 import LottieView from 'lottie-react-native';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FlatList, StyleSheet } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Index() {
 
-  const [categoryId, setCategoryId] = useState(Exercises.categories[2].id)
+  const [categoryId, setCategoryId] = useState(Exercises.categories[0].id)
+  const theme = useThemeStore(state => state.theme);
+  const styles = useMemo(() => {
+    return makeStyles(theme);
+  }, [theme]);
+
+
 
   return (
     <SafeAreaView
@@ -21,16 +29,19 @@ export default function Index() {
         style={styles.animation}
         source={RelaxAnimation}
       />
-      <CategoryGroup categoryList={Exercises.categories} onChange={setCategoryId} />
+      <CategoryGroup theme={theme} categoryList={Exercises.categories} value={categoryId} onChange={setCategoryId} />
 
       <FlatList
-        data={Exercises.categories.find(item => item.id === categoryId)!.exercises}
+        data={Exercises.categories.find(
+          item => item.id === categoryId
+        )?.exercises ?? []}
         contentContainerStyle={styles.flatListContainer}
         style={{ width: '100%' }}
         renderItem={({ item }) => <ExerciseCard
           title={item.name}
           description={item.description}
-          source={item.lightSource}
+          source={theme === 'light' ? item.lightSource : item.darkSource}
+          theme={theme}
         />}
         keyExtractor={item => item.id.toString()} />
 
@@ -38,21 +49,25 @@ export default function Index() {
     </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    paddingHorizontal: 5
-  },
-  animation: {
-    width: '100%',
-    aspectRatio: 16 / 9,
-  },
-  flatListContainer: {
-    alignItems: 'center',
-    gap: 10,
-    paddingTop: 10,
+function makeStyles(theme: 'light' | 'dark') {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      paddingHorizontal: 5,
+      backgroundColor: Colors[theme].background,
 
-  }
+    },
+    animation: {
+      width: '100%',
+      aspectRatio: 16 / 9,
+    },
+    flatListContainer: {
+      alignItems: 'center',
+      gap: 10,
+      paddingBottom: 10,
 
-})
+    }
+
+  })
+}

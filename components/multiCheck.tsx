@@ -1,8 +1,9 @@
+import { Colors } from "@/constants/colors";
 import CheckBox from "@react-native-community/checkbox";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 
-export default function MultiCheck({ options, onValueChange, defaultSelectedList }: { options: string[], onValueChange: (selected: string[]) => void, defaultSelectedList: string[] }) {
+export default function MultiCheck({ options, onValueChange, defaultSelectedList, theme }: { options: string[], onValueChange: (selected: string[]) => void, defaultSelectedList: string[], theme: 'light' | 'dark' }) {
     const [selected, setSelected] = useState<string[]>(defaultSelectedList || options);
 
     const toggleOption = (option: string) => {
@@ -26,9 +27,10 @@ export default function MultiCheck({ options, onValueChange, defaultSelectedList
                     <CheckBox
                         value={selected.includes(option)}
                         onValueChange={() => toggleOption(option)}
-                        tintColors={{ true: "blue", false: "gray" }}
+                        tintColors={{ true: Colors[theme].themeCross, false: Colors[theme].themeCross }}
+
                     />
-                    <Text style={{ fontSize: 20, }}>{option}</Text>
+                    <Text style={{ fontSize: 20, color: theme === 'light' ? Colors[theme].themeCross : Colors[theme].textSecondary }}>{option}</Text>
                 </View>
             ))}
         </View>

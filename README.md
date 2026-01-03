@@ -79,3 +79,9 @@ All exercises are intended for general wellness and awareness only.
 ## 💚 Code Healthy with Lumbot
 
 > “Great code starts with a healthy body.”
+
+## Todos & Roadmap
+
+- styling
+- connect database
+- add sounds effect

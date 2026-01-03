@@ -1,11 +1,9 @@
-import Entypo from '@expo/vector-icons/Entypo';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 const exercises = {
   categories: [
     {
       "id": "hand_wrist",
       "category_name": "Hands",
-      "category_icon": <Entypo name="hand" size={25} color="grey" />,
+      "category_icon_name": 'hand-back-left',
       "target_area": "Carpal Tunnel & RSI Prevention",
       "exercises": [
         {
@@ -93,7 +91,7 @@ const exercises = {
     {
       "id": "neck_head",
       "category_name": "Head",
-      "category_icon": <MaterialCommunityIcons name="head" size={25} color="grey" />,
+      "category_icon_name": 'head',
       "target_area": "Tech Neck & Headaches",
       "exercises": [
         {
@@ -180,7 +178,7 @@ const exercises = {
     }, {
       "id": "shoulder_back",
       "category_name": "Back",
-      "category_icon": <MaterialCommunityIcons name="human-greeting-variant" size={25} color="grey" />,
+      "category_icon_name": 'human-greeting-variant',
       "target_area": "Hunchback (Kyphosis) & Posture",
       "exercises": [
         {
@@ -268,7 +266,7 @@ const exercises = {
     {
       "id": "waist_hip_leg",
       "category_name": "Lower Body",
-      "category_icon": <MaterialCommunityIcons name="foot-print" size={25} color="grey" />,
+      "category_icon_name": 'foot-print',
       "target_area": "Lower Back Pain & Circulation",
       "exercises": [
         {

@@ -16,26 +16,22 @@ export default function Customization() {
     const {
         exerciseList,
         focusPeriod,
-        breakPeriod,
         setExerciseList,
         setFocusPeriod,
-        setBreakPeriod,
         waterReminder,
         setWaterReminder,
-        focusGoal,
-        setFocusGoal,
+        dailyLapGoal,
+        setDailyLapGoal,
     } = useExerciseStore(
         useShallow((state) => ({
             exerciseList: state.exerciseList,
             focusPeriod: state.focusPeriod,
-            breakPeriod: state.breakPeriod,
             setExerciseList: state.setExerciseList,
             setFocusPeriod: state.setFocusPeriod,
-            setBreakPeriod: state.setBreakPeriod,
             waterReminder: state.waterReminder,
             setWaterReminder: state.setWaterReminder,
-            focusGoal: state.focusGoal,
-            setFocusGoal: state.setFocusGoal,
+            dailyLapGoal: state.dailyLapGoal,
+            setDailyLapGoal: state.setDailyLapGoal,
         }))
     )
 
@@ -53,7 +49,10 @@ export default function Customization() {
         return makeStyles(theme);
     }, [theme]);
 
-    const focusTimes = [{
+    const focusDurationData = [{
+        value: 1, // use for test
+        label: '1',
+    }, {
         value: 15,
         label: '15',
 
@@ -78,35 +77,9 @@ export default function Customization() {
         value: 120,
         label: '120',
     },]
-    const breakTimes = [
-        {
-            value: 0,
-            label: 'auto',
 
-        },
-        {
-            value: 1,
-            label: '1',
-        },
-        {
-            value: 5,
-            label: '5',
-        },
-        {
-            value: 15,
-            label: '15',
-        },
 
-        {
-            value: 20,
-            label: '20',
-        },
-        {
-            value: 30,
-            label: '30',
-        }]
-
-    const focusGoals = [...Array(24).keys()].map((index) => ({
+    const lapGoalsData = [...Array(12).keys()].map((index) => ({
         value: index + 1,
         label: (index + 1).toString(),
     }))
@@ -124,14 +97,14 @@ export default function Customization() {
                         headerShadowVisible: false,
                     }}
                 />
-                <Text style={styles.title} >Set Your Study Time</Text>
+                <Text style={styles.title} >Focus Duration</Text>
                 <Text style={styles.subtitle}>
-                    On the work headmap, the darker the color, the closer you are to reaching it.
+                    Choose how long you want to focus on each focus session.
                 </Text>
                 <WheelPicker
                     visibleItemCount={3}
                     style={{ backgroundColor: Colors[theme].background, borderRadius: 10 }}
-                    data={focusTimes}
+                    data={focusDurationData}
                     value={focusPeriod}
                     onValueChanged={({ item: { value } }) => setFocusPeriod(value)}
                     itemTextStyle={{
@@ -142,35 +115,17 @@ export default function Customization() {
                         backgroundColor: Colors[theme].themeCross,
                     }}
                 />
-                <Text style={styles.title} >Set Your Break Time</Text>
-                <Text style={styles.subtitle}>
-                    On the work headmap, the darker the color, the closer you are to reaching it.
-                </Text>
-                <WheelPicker
-                    visibleItemCount={3}
-                    style={{ backgroundColor: Colors[theme].background, borderRadius: 10 }}
-                    data={breakTimes}
-                    value={breakPeriod}
-                    onValueChanged={({ item: { value } }) => setBreakPeriod(value)}
-                    itemTextStyle={{
-                        color: Colors[theme].themeCross,
-                    }}
-                    enableScrollByTapOnItem={true}
-                    overlayItemStyle={{
-                        backgroundColor: Colors[theme].themeCross,
-                    }}
 
-                />
-                <Text style={styles.title} >Set Your Focus Goal</Text>
+                <Text style={styles.title} >Daily Lap Goal</Text>
                 <Text style={styles.subtitle}>
-                    On the work headmap, the darker the color, the closer you are to reaching it.
+                    Set how many laps you aim to complete today.
                 </Text>
                 <WheelPicker
                     visibleItemCount={3}
                     style={{ backgroundColor: Colors[theme].background, borderRadius: 10 }}
-                    data={focusGoals}
-                    value={focusGoal}
-                    onValueChanged={({ item: { value } }) => setFocusGoal(value)}
+                    data={lapGoalsData}
+                    value={dailyLapGoal}
+                    onValueChanged={({ item: { value } }) => setDailyLapGoal(value)}
                     itemTextStyle={{
                         color: Colors[theme].themeCross,
                     }}
@@ -181,7 +136,7 @@ export default function Customization() {
                 />
                 <Text style={styles.title} >Customization </Text>
                 <Text style={styles.subtitle}>
-                    On the work headmap, the darker the color, the closer you are to reaching it.
+                    Pick the exercises you want to include in your routine.
                 </Text>
                 <MultiCheck defaultSelectedList={exerciseList} theme={theme} onValueChange={setExerciseList} options={Exercises.categories.map(category => category.category_name)} />
                 <Text style={styles.title} >Water Reminder </Text>
@@ -189,10 +144,10 @@ export default function Customization() {
                     Reminds you to drink water while working.
                 </Text>
                 <SwitchButton theme={theme} title="Reminder" value={waterReminder} onToggle={setWaterReminder} />
-                <Text style={styles.title}>Theme Mode</Text>
+                <Text style={styles.title}>App Theme</Text>
 
                 <Text style={styles.subtitle}>
-                    Change the app appearance to your preference.
+                    Switch between Light and Dark mode according to your preference.
                 </Text>
 
                 <SwitchButton theme={theme}

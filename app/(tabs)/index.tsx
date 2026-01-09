@@ -1,4 +1,6 @@
 import { Colors } from '@/constants/colors';
+import { useSQLiteContext, } from 'expo-sqlite';
+
 import exercisesData from '@/lib/data';
 import useExerciseStore from '@/zustand/useExerciseStore';
 import useThemeStore from '@/zustand/useThemeStore';
@@ -12,14 +14,17 @@ import { useShallow } from 'zustand/react/shallow';
 export default function Index() {
   useKeepAwake();
 
+  const db = useSQLiteContext();
+
   const theme = useThemeStore(state => state.theme);
 
   const styles = useMemo(() => makeStyles(theme), [theme]);
 
-  const { focusPeriod, waterReminder } = useExerciseStore(
+  const { focusPeriod, waterReminder, dailyLapGoal } = useExerciseStore(
     useShallow((state) => ({
       focusPeriod: state.focusPeriod,
       waterReminder: state.waterReminder,
+      dailyLapGoal: state.dailyLapGoal,
     }))
   );
 
@@ -92,16 +97,68 @@ export default function Index() {
     setIsRunning(true);
   };
 
-  const handleContinue = () => {
+
+  const handleContinue = async (isPassed: boolean) => {
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+    if (!interrupted) {
+      // Günlük durumu ekle (varsa yok say)
+      await db.runAsync(
+        `INSERT OR IGNORE INTO day_status (day , lap_goal) VALUES (?, ?)`,
+        [today, dailyLapGoal]
+      );
+    }
+
+    const addExercise = async (passed: number) => {
+      // Egzersizi her zaman ekle
+      await db.runAsync(
+        `INSERT INTO exercises (day, category_name, exercise_name, passed) VALUES (?, ?, ?, ?)`,
+        [today, selectedExercises[currentStep - 1]?.categoryName, selectedExercises[currentStep - 1]?.name, passed]
+      );
+
+      // Eğer egzersiz geçilmediyse (passed = 0), day_status'taki exercise_count'u güncelle
+      if (passed === 0) {
+        await db.runAsync(
+          `UPDATE day_status SET exercise_count = exercise_count + 1 WHERE day = ?`,
+          [today]
+        );
+      }
+    };
+
+
     if (currentStep === 1) {
       setCurrentStep(2);
+      if (!interrupted && !isPassed) await addExercise(0);
+      else if (!interrupted && isPassed) await addExercise(1);
     } else if (currentStep === 2) {
+      if (!interrupted) {
+        // lap_count artır
+        await db.runAsync(
+          `UPDATE day_status SET lap_count = lap_count + 1 WHERE day = ?`,
+          [today]
+        );
+      }
+      if (!interrupted && !isPassed) await addExercise(0);
+      else if (!interrupted && isPassed) await addExercise(1);
+
+
       if (waterReminder) setCurrentStep(3);
       else finishExercises();
     } else if (currentStep === 3) {
+      if (!interrupted && !isPassed) {
+        // water_count artır
+        await db.runAsync(
+          `UPDATE day_status SET water_count = water_count + 1 WHERE day = ?`,
+          [today]
+        );
+      }
+
       finishExercises();
     }
+
   };
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -120,7 +177,7 @@ export default function Index() {
               if (isRunning) { setIsRunning(false); setInterrupted(true); }
               else { setIsRunning(true); setInterrupted(false); }
             } else {
-              handleContinue();
+              handleContinue(false);
             }
           }}
         >
@@ -188,7 +245,7 @@ export default function Index() {
             <Text style={styles.exerciseDescriptionText}>
               {currentStep === 3 ? "Stay hydrated! It's time to take a sip of water." : selectedExercises[currentStep - 1]?.description}
             </Text>
-            <TouchableOpacity style={[styles.actionButton, styles.passButton]} onPress={handleContinue}>
+            <TouchableOpacity style={[styles.actionButton, styles.passButton]} onPress={() => handleContinue(true)}>
               <Text style={styles.passButtonText}>Pass</Text>
             </TouchableOpacity>
           </View>

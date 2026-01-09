@@ -5,10 +5,21 @@ import { Colors } from '@/constants/colors';
 import useThemeStore from '@/zustand/useThemeStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from "expo-router";
+import { useSQLiteContext } from 'expo-sqlite';
 import LottieView from 'lottie-react-native';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+interface DayStatus {
+  day: string;
+  lap_goal: number;
+  exercise_count: number;
+  water_count: number;
+  lap_count: number;
+  daily_lap_goal: number;
+}
+
 
 export default function Index() {
   const router = useRouter();
@@ -19,6 +30,8 @@ export default function Index() {
 
   const styles = useMemo(() => getStyles(theme), [theme]);
 
+  const db = useSQLiteContext();
+
   const changeMonth = (direction: -1 | 1) => {
     setCurrentDate(
       new Date(
@@ -28,6 +41,46 @@ export default function Index() {
       )
     )
   };
+  useEffect(() => {
+    const year = currentDate.getFullYear().toString();
+    const month = currentDate.getMonth() + 1; // Ay 0-11 aralığında olduğu için 1 ekliyoruz.
+    getMonthDayStatus(year, month).then((data) => {
+      console.log('Month Day Status:', data);
+    });
+  }, [currentDate]);
+
+  /**
+   * Belirli yıl ve ay için day_status verilerini döner.
+   * Ayın son gününü otomatik hesaplar.
+   * @param year YYYY formatında yıl (ör: "2026")
+   * @param month 1-12 arasında ay (ör: 1 = Ocak, 2 = Şubat)
+   * @returns DayStatus[] dizisi
+   */
+
+  const getMonthDayStatus = async (year: string, month: number): Promise<DayStatus[]> => {
+
+    try {
+      // Ayın ilk günü
+      const startDate = new Date(parseInt(year), month - 1, 1);
+
+      // Ayın son günü
+      const endDate = new Date(parseInt(year), month, 0); // 0 → önceki ayın son günü
+
+      const startStr = startDate.toISOString().split('T')[0]; // "YYYY-MM-DD"
+      const endStr = endDate.toISOString().split('T')[0];
+
+      const dayStatusList = await db.getAllAsync<DayStatus>(
+        `SELECT * FROM day_status WHERE day BETWEEN ? AND ? ORDER BY day ASC`,
+        [startStr, endStr]
+      );
+
+      return dayStatusList;
+    } catch (error) {
+      console.error('Failed to fetch month day_status:', error);
+      return [];
+    }
+  };
+
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'right', 'left']}>

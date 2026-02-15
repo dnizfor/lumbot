@@ -1,4 +1,6 @@
-# 🧠 Lumbot – Developers’ Neck & Back Health
+![alt text](assets/images/splash-icon.png)
+
+# 💆‍♂️ Lumbot – Developers’ Neck & Back Health
 
 **Lumbot** is a Pomodoro-based productivity and health app designed for developers and desk workers.  
 While you work, Lumbot periodically sends **neck, back, and body exercise reminders** to help reduce pain, improve posture, and build healthy habits.
@@ -80,7 +82,3 @@ All exercises are intended for general wellness and awareness only.
 
 > “Great code starts with a healthy body.”
 
-## Todos & Roadmap
-
-- add sounds effect
-- responsive design for react native 

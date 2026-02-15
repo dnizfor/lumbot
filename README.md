@@ -1,4 +1,4 @@
-![alt text](assets/images/splash-icon.png)
+<img width="1024" height="523" alt="Image" src="https://github.com/user-attachments/assets/27a23184-c79c-40c8-bbb5-15732b608b8d" />
 
 # 💆‍♂️ Lumbot – Developers’ Neck & Back Health
 

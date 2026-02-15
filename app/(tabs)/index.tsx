@@ -85,7 +85,6 @@ export default function Index() {
 
   const finishExercises = () => {
     const wasTimerFinished = secondsLeft === 0;
-
     setCurrentStep(0);
     setSelectedExercises([]);
     setInterrupted(false);
@@ -99,7 +98,16 @@ export default function Index() {
 
 
   const handleContinue = async (isPassed: boolean) => {
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const now = new Date();
+
+    // Yerel tarih bilgisini alıyoruz
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // 0-indexed
+    const day = String(now.getDate()).padStart(2, '0');
+
+    const today = `${year}-${month}-${day}`;
+    console.log(today);
+
 
     if (!interrupted) {
       // Günlük durumu ekle (varsa yok say)

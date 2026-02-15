@@ -82,6 +82,5 @@ All exercises are intended for general wellness and awareness only.
 
 ## Todos & Roadmap
 
-- styling
-- connect database
 - add sounds effect
+- responsive design for react native 

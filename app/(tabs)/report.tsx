@@ -1,7 +1,9 @@
 import ReportAnimation from '@/assets/lotties/reports.json';
 import ArrowForwarButton from '@/components/arrowForwarButton';
+import DailyReportCard from '@/components/dailyReportCard';
 import HeadMap from "@/components/headMap";
 import { Colors } from '@/constants/colors';
+import { DayStatus } from '@/types/types';
 import useThemeStore from '@/zustand/useThemeStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from "expo-router";
@@ -11,22 +13,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-interface DayStatus {
-  day: string;
-  lap_goal: number;
-  exercise_count: number;
-  water_count: number;
-  lap_count: number;
-  daily_lap_goal: number;
-}
-
-
-export default function Index() {
+export default function Report() {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1)
   );
+  const [monthlyData, setMonthlyData] = useState<DayStatus[]>([])
   const theme = useThemeStore((state) => state.theme);
+  const [selectedDate, setSelectedDate] = useState<string>(currentDate.toISOString().split('T')[0]);
+  const [selectedDayData, setSelectedDayData] = useState<DayStatus>()
 
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -43,11 +38,19 @@ export default function Index() {
   };
   useEffect(() => {
     const year = currentDate.getFullYear().toString();
-    const month = currentDate.getMonth() + 1; // Ay 0-11 aralığında olduğu için 1 ekliyoruz.
+    const month = currentDate.getMonth() + 1;
     getMonthDayStatus(year, month).then((data) => {
-      console.log('Month Day Status:', data);
+      setMonthlyData(data)
     });
   }, [currentDate]);
+
+  const onDaySelect = (day: string) => {
+    console.log("SET DAY:", day);
+    setSelectedDate(prev => {
+      console.log("PREV:", prev);
+      return day;
+    });
+  };
 
   /**
    * Belirli yıl ve ay için day_status verilerini döner.
@@ -89,8 +92,8 @@ export default function Index() {
           <Text style={styles.monthText}>
             {currentDate.toLocaleString('en-US', { month: 'long' })}
           </Text>
-
           <View style={styles.buttonContainer}>
+
             <TouchableOpacity
               style={styles.arrowButton}
               onPress={() => changeMonth(-1)}
@@ -106,21 +109,23 @@ export default function Index() {
             >
               <MaterialIcons name="arrow-forward-ios" size={24} color={
                 Colors[theme].themeCross
-
               } />
             </TouchableOpacity>
+
           </View>
         </View>
-
-        <HeadMap currentDate={currentDate} />
-
-        <LottieView
-          autoPlay
-          containerStyle={styles.lottieContainer}
-          style={styles.lottie}
-          source={ReportAnimation}
+        <HeadMap currentDate={currentDate} setSelectedDayData={setSelectedDayData} monthlyData={monthlyData} onSelect={onDaySelect}
         />
+        {
+          setSelectedDayData === undefined ? <LottieView
+            autoPlay
+            containerStyle={styles.lottieContainer}
+            style={styles.lottie}
+            source={ReportAnimation}
+          /> : <DailyReportCard />
 
+        }
+        {/* dayStatus={selectedDayData}  */}
         <ArrowForwarButton theme={theme} title={'Customization'} onPress={() => router.push("/customization")} />
 
       </ScrollView>

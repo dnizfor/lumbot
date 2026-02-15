@@ -6,22 +6,25 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 
-export default function StatBox({ value, total, label, color }: StatBoxProps) {
+export default function StatBox({ value, total, label, color, iconColor, labelColor }: StatBoxProps) {
     return (
         <View style={styles.statBox}>
             <View style={[styles.circle, { borderColor: color }]}>
                 {
                     label === 'LAPS' ?
-                        <FontAwesome5 name="running" size={24} color="black" /> :
-                        label === 'H2O' ? <MaterialIcons name="water-drop" size={24} color="black" /> :
-                            <MaterialCommunityIcons name="dumbbell" size={24} color="black" />
+                        <FontAwesome5 name="running" size={24} color={iconColor} /> :
+                        label === 'H2O' ? <MaterialIcons name="water-drop" size={24} color={iconColor} /> :
+                            <MaterialCommunityIcons name="dumbbell" size={24} color={iconColor} />
                 }
 
             </View>
-            <Text style={styles.statValue}>
+            <Text style={[styles.statValue, { color: labelColor }]}>
                 {value}
-                <Text style={styles.statTotal}>/{total}</Text>
+                {total !== undefined && total !== null && (
+                    <Text style={styles.statTotal}>/{total}</Text>
+                )}
             </Text>
+
             <Text style={styles.statLabel}>{label}</Text>
         </View>
     );
@@ -44,7 +47,6 @@ const styles = StyleSheet.create({
     statValue: {
         fontSize: 18,
         fontWeight: "700",
-        color: "#0F172A",
         marginTop: 8,
 
     },

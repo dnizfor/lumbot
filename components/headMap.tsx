@@ -31,28 +31,44 @@ export default function HeadMap({ currentDate, monthlyData, onSelect, setSelecte
 
     // renderDay artık key parametresi alıyor
     const renderDay = (key: number) => {
-        if (day > daysInMonth) return <View key={key} style={styles.ghostBox} />;
+        if (day > daysInMonth)
+            return <View key={key} style={styles.ghostBox} />;
+
+        const currentDay = day;
+
+        // ❗ ISO KULLANMIYORUZ
+        const monthStr = String(month + 1).padStart(2, '0');
+        const dayStr = String(currentDay).padStart(2, '0');
+        const dayString = `${year}-${monthStr}-${dayStr}`;
 
         const isToday =
-            day === today.getDate() &&
+            currentDay === today.getDate() &&
             month === today.getMonth() &&
             year === today.getFullYear();
 
-        const dayStatus = monthlyData.find(d => new Date(d.day).getDate() === day);
+        const dayStatus = monthlyData.find(
+            (d) => d.day === dayString
+        );
 
         let opacity = 1;
 
+        // 🔒 BURAYA DOKUNMADIM
         if (dayStatus) {
             opacity = dayStatus.exercise_count / (dayStatus.lap_goal * 2);
-            if (opacity > 1) {
-                opacity = 1
-            }
+            if (opacity > 1) opacity = 1;
         }
 
+        day++;
 
         return (
-            <TouchableOpacity onPress={() => dayStatus === undefined ? setSelectedDayData(undefined) : setSelectedDayData(dayStatus)}
-                key={key} style={[styles.box, isToday && styles.today,]} >
+            <TouchableOpacity
+                key={key}
+                onPress={() => {
+                    onSelect(dayString);
+                    setSelectedDayData(dayStatus);
+                }}
+                style={[styles.box, isToday && styles.today]}
+            >
                 {isToday && (
                     <Pulse
                         color="green"
@@ -61,17 +77,32 @@ export default function HeadMap({ currentDate, monthlyData, onSelect, setSelecte
                         speed={50}
                         duration={1000}
                     />
-                )
-                }
-                <View style={[styles.box, isToday && styles.today, dayStatus && !isToday && {
-                    backgroundColor: Colors[theme].successful, opacity: opacity
-                }]}>
-                    <Text style={[styles.label, dayStatus && !isToday && { color: 'white' }]}>{day++}</Text>
+                )}
 
+                <View
+                    style={[
+                        styles.box,
+                        isToday && styles.today,
+                        dayStatus &&
+                        !isToday && {
+                            backgroundColor: Colors[theme].successful,
+                            opacity: opacity,
+                        },
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.label,
+                            dayStatus && !isToday && { color: 'white' },
+                        ]}
+                    >
+                        {currentDay}
+                    </Text>
                 </View>
-            </TouchableOpacity >
+            </TouchableOpacity>
         );
     };
+
 
     return (
         <View style={styles.container}>

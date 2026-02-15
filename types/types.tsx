@@ -4,7 +4,6 @@ export type DayStatus = {
     exercise_count: number;
     water_count: number;
     lap_count: number;
-    daily_lap_goal: number;
 }
 
 export type MetricData = {
@@ -25,7 +24,9 @@ export type Category = {
 }
 export type StatBoxProps = {
     value: number,
-    total: number,
+    total?: number,
     label: string,
-    color: string
+    color: string,
+    iconColor: string,
+    labelColor: string
 }

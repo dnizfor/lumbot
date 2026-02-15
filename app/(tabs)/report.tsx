@@ -15,17 +15,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Report() {
   const router = useRouter();
+  const db = useSQLiteContext();
+  const theme = useThemeStore((state) => state.theme);
+
   const [currentDate, setCurrentDate] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1)
   );
-  const [monthlyData, setMonthlyData] = useState<DayStatus[]>([])
-  const theme = useThemeStore((state) => state.theme);
-  const [selectedDate, setSelectedDate] = useState<string>(currentDate.toISOString().split('T')[0]);
-  const [selectedDayData, setSelectedDayData] = useState<DayStatus>()
+
+  const [monthlyData, setMonthlyData] = useState<DayStatus[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDayData, setSelectedDayData] = useState<DayStatus | undefined>();
 
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const db = useSQLiteContext();
+  const today = new Date().toISOString().split('T')[0];
 
   const changeMonth = (direction: -1 | 1) => {
     setCurrentDate(
@@ -34,42 +37,28 @@ export default function Report() {
         currentDate.getMonth() + direction,
         1
       )
-    )
+    );
   };
+
   useEffect(() => {
     const year = currentDate.getFullYear().toString();
     const month = currentDate.getMonth() + 1;
+
     getMonthDayStatus(year, month).then((data) => {
-      setMonthlyData(data)
+      setMonthlyData(data);
     });
   }, [currentDate]);
 
   const onDaySelect = (day: string) => {
-    console.log("SET DAY:", day);
-    setSelectedDate(prev => {
-      console.log("PREV:", prev);
-      return day;
-    });
+    setSelectedDate(day);
   };
 
-  /**
-   * Belirli yıl ve ay için day_status verilerini döner.
-   * Ayın son gününü otomatik hesaplar.
-   * @param year YYYY formatında yıl (ör: "2026")
-   * @param month 1-12 arasında ay (ör: 1 = Ocak, 2 = Şubat)
-   * @returns DayStatus[] dizisi
-   */
-
   const getMonthDayStatus = async (year: string, month: number): Promise<DayStatus[]> => {
-
     try {
-      // Ayın ilk günü
       const startDate = new Date(parseInt(year), month - 1, 1);
+      const endDate = new Date(parseInt(year), month, 0);
 
-      // Ayın son günü
-      const endDate = new Date(parseInt(year), month, 0); // 0 → önceki ayın son günü
-
-      const startStr = startDate.toISOString().split('T')[0]; // "YYYY-MM-DD"
+      const startStr = startDate.toISOString().split('T')[0];
       const endStr = endDate.toISOString().split('T')[0];
 
       const dayStatusList = await db.getAllAsync<DayStatus>(
@@ -84,54 +73,73 @@ export default function Report() {
     }
   };
 
+  const shouldShowLottie =
+    !selectedDate ||
+    selectedDate === today ||
+    !selectedDayData;
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'right', 'left']}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+
         <View style={styles.header}>
           <Text style={styles.monthText}>
             {currentDate.toLocaleString('en-US', { month: 'long' })}
           </Text>
-          <View style={styles.buttonContainer}>
 
+          <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.arrowButton}
               onPress={() => changeMonth(-1)}
             >
-              <MaterialIcons name="arrow-back-ios" size={24} color={
-                Colors[theme].themeCross
-              } />
+              <MaterialIcons
+                name="arrow-back-ios"
+                size={24}
+                color={Colors[theme].themeCross}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.arrowButton}
               onPress={() => changeMonth(1)}
             >
-              <MaterialIcons name="arrow-forward-ios" size={24} color={
-                Colors[theme].themeCross
-              } />
+              <MaterialIcons
+                name="arrow-forward-ios"
+                size={24}
+                color={Colors[theme].themeCross}
+              />
             </TouchableOpacity>
-
           </View>
         </View>
-        <HeadMap currentDate={currentDate} setSelectedDayData={setSelectedDayData} monthlyData={monthlyData} onSelect={onDaySelect}
+
+        <HeadMap
+          currentDate={currentDate}
+          setSelectedDayData={setSelectedDayData}
+          monthlyData={monthlyData}
+          onSelect={onDaySelect}
         />
-        {
-          setSelectedDayData === undefined ? <LottieView
+
+        {shouldShowLottie ? (
+          <LottieView
             autoPlay
             containerStyle={styles.lottieContainer}
             style={styles.lottie}
             source={ReportAnimation}
-          /> : <DailyReportCard />
+          />
+        ) : (
+          <DailyReportCard dayStatus={selectedDayData}
+            selectedDate={selectedDate} />
+        )}
 
-        }
-        {/* dayStatus={selectedDayData}  */}
-        <ArrowForwarButton theme={theme} title={'Customization'} onPress={() => router.push("/customization")} />
-
+        <ArrowForwarButton
+          theme={theme}
+          title={'Customization'}
+          onPress={() => router.push("/customization")}
+        />
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 function getStyles(theme: 'light' | 'dark') {
   return StyleSheet.create({
@@ -169,7 +177,6 @@ function getStyles(theme: 'light' | 'dark') {
       justifyContent: 'center',
       alignItems: 'flex-end',
       borderRadius: 8,
-
     },
     lottieContainer: {
       borderWidth: 2,
@@ -183,5 +190,5 @@ function getStyles(theme: 'light' | 'dark') {
       width: '150%',
       aspectRatio: 16 / 9,
     }
-  })
-};
+  });
+}

@@ -1,16 +1,17 @@
 import { Colors } from '@/constants/colors';
-import { useSQLiteContext, } from 'expo-sqlite';
-
 import exercisesData from '@/lib/data';
 import useExerciseStore from '@/zustand/useExerciseStore';
 import useThemeStore from '@/zustand/useThemeStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useAudioPlayer } from "expo-audio";
 import { useKeepAwake } from 'expo-keep-awake';
+import { useSQLiteContext, } from 'expo-sqlite';
 import { useEffect, useMemo, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SwipeButton from "rn-swipe-button";
 import { useShallow } from 'zustand/react/shallow';
+
 export default function Index() {
   useKeepAwake();
 
@@ -39,6 +40,7 @@ export default function Index() {
   useEffect(() => {
     if (!isRunning && currentStep === 0 && !interrupted) {
       setSecondsLeft(focusPeriod * 60);
+
     }
   }, [focusPeriod]);
 
@@ -52,6 +54,12 @@ export default function Index() {
 
   useEffect(() => {
     if (secondsLeft === 0 && isRunning && currentStep === 0) {
+      try {
+        notificationPlayer.seekTo(0); // Sesi başa sar
+        notificationPlayer.play();    // Sesi çal
+      } catch (err) {
+        console.log("Notification sound error:", err);
+      }
       handleExerciseSelection();
     }
   }, [secondsLeft]);
@@ -70,6 +78,7 @@ export default function Index() {
     if (interrupted) return Colors[theme].alert;
     return Colors[theme].themeCross;
   }
+
   const handleExerciseSelection = () => {
     const shuffledCategories = [...categories].sort(() => 0.5 - Math.random());
     const pickedCategories = shuffledCategories.slice(0, 2);
@@ -96,8 +105,13 @@ export default function Index() {
     setIsRunning(true);
   };
 
+  const buttonPlayer = useAudioPlayer(require("@/assets/sounds/press.mp3")); // hook ile ses oluştur
+  const notificationPlayer = useAudioPlayer(require("@/assets/sounds/notification.mp3")); // hook ile ses oluştur
+  const slidePlayer = useAudioPlayer(require("@/assets/sounds/slide.mp3")); // hook ile ses oluştur
+
 
   const handleContinue = async (isPassed: boolean) => {
+
     const now = new Date();
 
     // Yerel tarih bilgisini alıyoruz
@@ -181,6 +195,12 @@ export default function Index() {
             },
           ]}
           onPress={() => {
+            try {
+              buttonPlayer.play();
+              buttonPlayer.seekTo(0);
+            } catch {
+              console.log('err')
+            }
             if (currentStep === 0) {
               if (isRunning) { setIsRunning(false); setInterrupted(true); }
               else { setIsRunning(true); setInterrupted(false); }
@@ -211,7 +231,11 @@ export default function Index() {
       <View style={[styles.bottomSection, currentStep == 0 && !interrupted && { display: 'none' }]}>
         {interrupted && currentStep === 0 && (
           <View style={styles.buttonGroup}>
-            <TouchableOpacity style={styles.actionButton} onPress={handleExerciseSelection}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => {
+              buttonPlayer.play();
+              buttonPlayer.seekTo(0);
+              handleExerciseSelection()
+            }}>
               <Text style={styles.buttonText}>Exercise</Text>
             </TouchableOpacity>
             <SwipeButton
@@ -239,6 +263,13 @@ export default function Index() {
                 setSecondsLeft(focusPeriod * 60);
                 setIsRunning(false);
                 setInterrupted(false);
+                try {
+                  slidePlayer.seekTo(0);
+                  slidePlayer.play();
+                } catch (err) {
+                  console.log("Notification sound error:", err);
+                }
+
               }}
             />
 
@@ -253,7 +284,11 @@ export default function Index() {
             <Text style={styles.exerciseDescriptionText}>
               {currentStep === 3 ? "Stay hydrated! It's time to take a sip of water." : selectedExercises[currentStep - 1]?.description}
             </Text>
-            <TouchableOpacity style={[styles.actionButton, styles.passButton]} onPress={() => handleContinue(true)}>
+            <TouchableOpacity style={[styles.actionButton, styles.passButton]} onPress={() => {
+              buttonPlayer.play();
+              buttonPlayer.seekTo(0);
+              handleContinue(true)
+            }}>
               <Text style={styles.passButtonText}>Pass</Text>
             </TouchableOpacity>
           </View>

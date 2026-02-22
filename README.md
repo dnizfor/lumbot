@@ -82,3 +82,13 @@ All exercises are intended for general wellness and awareness only.
 
 > “Great code starts with a healthy body.”
 
+## SS
+
+<p float="left">
+  <img src="https://github.com/user-attachments/assets/86f8133e-1f50-4fe3-8cab-286e217fb519" width="200" />
+  <img src="https://github.com/user-attachments/assets/86bb55d1-2233-4adc-8b0d-93259c7613e1" width="200" />
+  <img src="https://github.com/user-attachments/assets/9bc0d61c-c431-4a2e-ae6f-b1d9f3ec48a1" width="200" />
+  <img src="https://github.com/user-attachments/assets/7211a800-4c3b-45e0-b1fa-6e7c9d6fcc06" width="200" />
+  <img src="https://github.com/user-attachments/assets/add40f77-4bae-4d20-baaa-1d638da0557c" width="200" />
+</p>
+

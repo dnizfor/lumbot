@@ -1,9 +1,29 @@
-<img width="1024" height="523" alt="Image" src="https://github.com/user-attachments/assets/27a23184-c79c-40c8-bbb5-15732b608b8d" />
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.dnizfor.lumbot">
+    <img src="https://github.com/user-attachments/assets/0f96723e-43b8-40c7-8732-12b798d5cca3" width="22%" />
+  </a>
+  <a href="https://play.google.com/store/apps/details?id=com.dnizfor.lumbot">
+    <img src="https://github.com/user-attachments/assets/6510ba3a-51ef-4ce9-9e63-994a836d9962" width="22%" />
+  </a>
+  <a href="https://play.google.com/store/apps/details?id=com.dnizfor.lumbot">
+    <img src="https://github.com/user-attachments/assets/38dff06b-6147-45d5-999c-bf6e74be0365" width="22%" />
+  </a>
+  <a href="https://play.google.com/store/apps/details?id=com.dnizfor.lumbot">
+    <img src="https://github.com/user-attachments/assets/58b63dab-2726-4a0c-86b4-c8ac75fcb50b" width="22%" />
+  </a>
+</p>
 
 # 💆‍♂️ Lumbot – Developers’ Neck & Back Health
 
 **Lumbot** is a Pomodoro-based productivity and health app designed for developers and desk workers.  
 While you work, Lumbot periodically sends **neck, back, and body exercise reminders** to help reduce pain, improve posture, and build healthy habits.
+
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.dnizfor.lumbot">
+    <b>📱 Download Lumbot on Google Play</b>
+  </a>
+</p>
+
 
 ---
 
@@ -182,4 +202,4 @@ All exercises are intended for general wellness and awareness only.
 ## 💚 Code Healthy with Lumbot
 
 > “Great code starts with a healthy body.”
-
+<img width="1024" height="523" alt="Image" src="https://github.com/user-attachments/assets/27a23184-c79c-40c8-bbb5-15732b608b8d" />
